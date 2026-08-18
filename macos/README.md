@@ -16,6 +16,8 @@ conda activate cohere-voice
 python -m pip install -r macos/requirements.txt
 ```
 
+`sentencepiece` is installed alongside `mlx-audio` because it is required to load the Cohere Transcribe tokenizer.
+
 ## Available demos
 
 * [Demo 01: record and transcribe](demo01/README.md) records from the macOS input device (including a Bose headset selected as the system input), then transcribes the resulting WAV file.
