@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Local transcription artefacts
+macos/output/
+macos/demo01/output/
+output/
+*.srt
+*.vtt
+
+# Downloaded models and local credentials
+.cache/
+.env
