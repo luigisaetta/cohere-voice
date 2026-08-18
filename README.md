@@ -49,6 +49,14 @@ This is the official Cohere BF16 checkpoint, not a community-converted `*-mlx` r
 
 For the complete runtime architecture and how the examples invoke `mlx-audio`, see [MLX_AUDIO.md](MLX_AUDIO.md).
 
+## Model licence and permitted use
+
+According to the [official model card](https://huggingface.co/CohereLabs/cohere-transcribe-03-2026), Cohere Transcribe is licensed under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0). This permissive licence allows the model to be used, modified, incorporated into products and services, and redistributed, including for commercial purposes.
+
+When redistributing the model or derivative works, retain the applicable licence, copyright, patent, trademark, and attribution notices; provide a copy of the Apache 2.0 licence; and clearly mark modified files. Apache 2.0 does not grant rights to use Cohere trademarks beyond accurately describing the model's origin, and the model is provided without warranties. Access to the model remains gated on Hugging Face, so review and accept the current access conditions before downloading it.
+
+The model licence does not replace obligations that may apply to the audio or transcripts you process. In particular, commercial use involving voice recordings should account for consent, privacy, data-protection, and other applicable legal requirements.
+
 ## Platform demos
 
 * [macOS / Apple Silicon](macos/README.md): local transcription with `mlx-audio` and the non-quantized Cohere checkpoint, including [Demo 01](macos/demo01/README.md) for microphone recording followed by transcription. See [the MLX Audio guide](MLX_AUDIO.md) for the integration details.
