@@ -12,8 +12,8 @@ The notebook must:
 
 1. Define editable settings for the Cohere model ID, language (default `it`), FLEURS configuration, split (default `test`), sample size (default `100`), random seed, and batch size.
 2. Map Cohere language codes to their corresponding FLEURS language configurations, including Italian (`it` → `it_it`).
-3. Load only the selected dataset configuration and sample records through Hugging Face Datasets streaming mode.
-4. Select a deterministic shuffled sample using the configured seed.
+3. Download only the selected language and split Parquet shard through the Hugging Face Hub client, whose transfer progress is visible and whose result is cached locally.
+4. Load the cached Parquet shard locally and select a deterministic shuffled sample using the configured seed.
 5. Load the Cohere model once through `mlx-audio` and run all inference locally through MLX and Metal.
 6. Transcribe each selected sample with the configured language.
 7. Compare normalized reference and hypothesis text, calculate corpus WER using `jiwer`, and display a per-sample results table plus an aggregate summary.
@@ -21,9 +21,9 @@ The notebook must:
 
 ## Data and metric behaviour
 
-* Dataset: `google/fleurs` from the Hugging Face Hub.
+* Dataset: `google/fleurs` from the Hugging Face Hub. The Italian test shard is approximately 806 MB at the current dataset revision and is reused from the local Hugging Face cache after its first download.
 * Reference field: `transcription`, the dataset's normalized transcript field.
-* Audio field: `audio`, passed to the loaded MLX model as a waveform and its original sample rate.
+* Audio field: `audio`, materialized as local audio files before it is passed to the loaded MLX model.
 * The notebook normalizes both references and hypotheses consistently before scoring: Unicode normalization, lowercasing, punctuation removal, and whitespace collapse.
 * WER is reported as the standard word-level edit-distance ratio. The notebook must retain original, unnormalized reference and hypothesis strings in its detailed output for auditability.
 * The notebook must make clear that this is a sample estimate, not a benchmark result for the full dataset.

@@ -59,9 +59,16 @@ The model licence does not replace obligations that may apply to the audio or tr
 
 ## Platform demos
 
-* [macOS / Apple Silicon](macos/README.md): local transcription with `mlx-audio` and the non-quantized Cohere checkpoint, including [Demo 01](macos/demo01/README.md) for microphone recording followed by transcription. See [the MLX Audio guide](MLX_AUDIO.md) for the integration details.
-* [macOS WER test](macos/wer-test/README.md): notebook-based WER evaluation on a deterministic sample from Hugging Face FLEURS.
-* [Linux](linux/README.md): reserved for the Linux-specific implementation.
+The table below is the growing catalogue of repository examples. Each entry links to
+its dedicated folder, which contains the prerequisites and detailed instructions.
+
+| Platform | Example | What it demonstrates | Entry point | Documentation |
+| --- | --- | --- | --- | --- |
+| macOS / Apple Silicon | Demo 01 — record and transcribe | Records Italian audio from a selected macOS input device, such as a Bose QC35 II headset, then transcribes it locally with the non-quantized Cohere checkpoint through `mlx-audio`. | [`record_and_transcribe.py`](macos/demo01/record_and_transcribe.py) | [Demo 01 folder](macos/demo01/) |
+| macOS / Apple Silicon | WER test | Downloads a deterministic Italian sample from Hugging Face FLEURS, runs local Cohere Transcribe inference, and calculates Word Error Rate (WER) against the dataset references. | [`wer_evaluation.ipynb`](macos/wer-test/wer_evaluation.ipynb) | [WER test folder](macos/wer-test/) |
+| Linux | Future demos | Reserved for Linux-specific implementations. | — | [Linux folder](linux/) |
+
+See [the MLX Audio guide](MLX_AUDIO.md) for the shared macOS runtime architecture.
 
 ## Run Demo 01 on macOS
 

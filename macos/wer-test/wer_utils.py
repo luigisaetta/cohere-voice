@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 
 from jiwer import wer
 
@@ -107,3 +107,28 @@ def validate_positive(value: int, name: str) -> int:
     if value <= 0:
         raise ValueError(f"{name} must be greater than zero.")
     return value
+
+
+def iter_indexed_batches(
+    records: Sequence[object], batch_size: int
+) -> Iterator[tuple[int, list[object]]]:
+    """Yield indexed record batches without using column-oriented slicing.
+
+    Hugging Face ``Dataset`` instances return a dictionary of columns when
+    sliced with ``dataset[start:end]``. Indexing individual rows keeps each
+    batch in the record-oriented form required by the notebook.
+
+    Args:
+        records: Indexable record collection, including a Hugging Face Dataset.
+        batch_size: Number of records to yield per batch.
+
+    Yields:
+        The zero-based start index and a list of row records.
+
+    Raises:
+        ValueError: If batch_size is not strictly positive.
+    """
+    validate_positive(batch_size, "Batch size")
+    for start in range(0, len(records), batch_size):
+        end = min(start + batch_size, len(records))
+        yield start, [records[index] for index in range(start, end)]

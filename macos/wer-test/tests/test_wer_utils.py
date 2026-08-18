@@ -17,6 +17,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from wer_utils import (
     calculate_wer,
     get_fleurs_config,
+    iter_indexed_batches,
     normalize_transcript,
     validate_positive,
 )
@@ -56,3 +57,13 @@ def test_validate_positive_rejects_zero() -> None:
     """Reject a non-positive notebook sample-size setting."""
     with pytest.raises(ValueError, match="Sample size"):
         validate_positive(0, "Sample size")
+
+
+def test_iter_indexed_batches_preserves_record_oriented_rows() -> None:
+    """Build batches from individual records instead of collection slices."""
+    records = [{"id": 1}, {"id": 2}, {"id": 3}]
+
+    assert list(iter_indexed_batches(records, 2)) == [
+        (0, [{"id": 1}, {"id": 2}]),
+        (2, [{"id": 3}]),
+    ]

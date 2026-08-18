@@ -1,6 +1,6 @@
 # WER test: Cohere Transcribe on FLEURS
 
-This demo measures the word error rate (WER) of the official non-quantized Cohere Transcribe checkpoint through `mlx-audio` on Apple Silicon. The evaluation notebook downloads a deterministic sample from the public [`google/fleurs`](https://huggingface.co/datasets/google/fleurs) dataset, transcribes it locally, compares each hypothesis with the dataset reference, and calculates corpus WER.
+This demo measures the word error rate (WER) of the official non-quantized Cohere Transcribe checkpoint through `mlx-audio` on Apple Silicon. The evaluation notebook downloads the Italian test shard from the public [`google/fleurs`](https://huggingface.co/datasets/google/fleurs) dataset, selects a deterministic sample locally, transcribes it, compares each hypothesis with the dataset reference, and calculates corpus WER.
 
 The default configuration is Italian: `it` for Cohere Transcribe and `it_it` for FLEURS. It uses the `test` split and 100 samples. FLEURS provides normalized transcripts in its `transcription` field and 16 kHz audio, making it suitable for this small, reproducible ASR evaluation.
 
@@ -22,10 +22,12 @@ jupyter lab
 
 Open `macos/wer-test/wer_evaluation.ipynb` and select the `cohere-voice` kernel. Run all cells in order.
 
+If JupyterLab was already open while the dependencies were installed, restart its kernel (or JupyterLab) before running the notebook so the interactive progress widgets are available.
+
 ## What the notebook does
 
 1. Sets the language, dataset split, sample size, random seed, and MLX batch size.
-2. Streams only the selected FLEURS language configuration from the Hugging Face Hub and draws a deterministic sample.
+2. Downloads only the selected FLEURS language-and-split Parquet shard with the Hugging Face client, which shows byte-level download progress and uses the local cache on later runs.
 3. Loads `CohereLabs/cohere-transcribe-03-2026` once through `mlx-audio`.
 4. Transcribes the samples locally with MLX and Metal.
 5. Normalizes reference and hypothesis text equally, then calculates corpus and per-sample WER with `jiwer`.
@@ -45,6 +47,8 @@ BATCH_SIZE = 1
 ```
 
 The supported language codes are `ar`, `de`, `el`, `en`, `es`, `fr`, `it`, `ja`, `ko`, `nl`, `pl`, `pt`, `vi`, and `zh`. The notebook maps each code to its FLEURS configuration. Begin with batch size `1`; increase it only after confirming that the Mac has sufficient unified memory.
+
+For Italian, the notebook downloads only `parquet-data/it_it/test-00000-of-00001.parquet`, not every FLEURS language or split. At the current dataset revision this shard is about 806 MB because it embeds the test audio. The first download is visible and may take time; Hugging Face then reuses the cached shard, making later runs fast. The sample is shuffled locally with `SEED`, so it is deterministic and does not delay the initial network transfer.
 
 ## Interpreting results
 
