@@ -44,6 +44,8 @@ hf download CohereLabs/cohere-transcribe-03-2026
 
 The model weights and supporting files are stored in the local Hugging Face cache. The checkpoint includes roughly 4 GB of weights; do not commit model artefacts, Hugging Face access tokens, private recordings, transcripts containing personal data, or runtime caches.
 
+This is the official Cohere BF16 checkpoint, not a community-converted `*-mlx` repository and not a quantized variant. It is nevertheless supported directly by `mlx-audio`, which runs it locally through MLX and Metal on Apple Silicon.
+
 ## Platform demos
 
 * [macOS / Apple Silicon](macos/README.md): local transcription with `mlx-audio` and the non-quantized Cohere checkpoint, including [Demo 01](macos/demo01/README.md) for microphone recording followed by transcription.
