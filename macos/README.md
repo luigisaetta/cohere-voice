@@ -29,6 +29,7 @@ See the repository-level [MLX Audio guide](../MLX_AUDIO.md) for how this checkpo
 ## Available demos
 
 * [Demo 01: record and transcribe](demo01/README.md) records from the macOS input device (including a Bose headset selected as the system input), then transcribes the resulting WAV file.
+* [WER test](wer-test/README.md) evaluates sample WER on a language-specific Hugging Face dataset from a Jupyter notebook.
 * `transcribe.py` is the shared command-line component for transcribing an existing audio file.
 
 ## Transcribe an existing audio file

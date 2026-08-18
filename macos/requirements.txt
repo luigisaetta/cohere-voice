@@ -3,3 +3,10 @@ mlx-audio==0.5.0
 
 # Required by mlx-audio to load Cohere Transcribe's tokenizer.
 sentencepiece==0.2.1
+
+# Notebook-based WER evaluation.
+jupyterlab>=4.4.0
+ipykernel>=6.29.0
+datasets>=4.0.0
+jiwer>=4.0.0
+pandas>=2.2.0

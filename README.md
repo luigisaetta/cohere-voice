@@ -60,6 +60,7 @@ The model licence does not replace obligations that may apply to the audio or tr
 ## Platform demos
 
 * [macOS / Apple Silicon](macos/README.md): local transcription with `mlx-audio` and the non-quantized Cohere checkpoint, including [Demo 01](macos/demo01/README.md) for microphone recording followed by transcription. See [the MLX Audio guide](MLX_AUDIO.md) for the integration details.
+* [macOS WER test](macos/wer-test/README.md): notebook-based WER evaluation on a deterministic sample from Hugging Face FLEURS.
 * [Linux](linux/README.md): reserved for the Linux-specific implementation.
 
 ## Run Demo 01 on macOS

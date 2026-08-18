@@ -6,6 +6,7 @@ __pycache__/
 # Local transcription artefacts
 macos/output/
 macos/demo01/output/
+macos/wer-test/output/
 output/
 *.srt
 *.vtt

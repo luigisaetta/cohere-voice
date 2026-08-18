@@ -83,6 +83,8 @@ python -m macos.demo01.record_and_transcribe \
 
 See [macos/README.md](macos/README.md) for the macOS runtime and [macos/demo01/README.md](macos/demo01/README.md) for recording options and output details.
 
+For sample-based WER measurement, use the [macOS WER test notebook](macos/wer-test/README.md). It loads a language-specific FLEURS sample from Hugging Face, uses the same local MLX runtime, and compares hypotheses with the dataset references.
+
 ## Operational notes
 
 * Apple Silicon and a Metal-capable macOS session are required for this runtime.
