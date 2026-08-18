@@ -32,12 +32,43 @@ pylint .
 pytest
 ```
 
-Install model-specific dependencies and follow the model-card guidance when adding a demo. Do not commit Hugging Face access tokens, private recordings, transcripts containing personal data, downloaded model artefacts, or runtime caches.
+## Download the model
+
+The Cohere checkpoint is gated on Hugging Face. First accept the model's access conditions on its [model card](https://huggingface.co/CohereLabs/cohere-transcribe-03-2026), then authenticate and download the non-quantized BF16 checkpoint from the command line:
+
+```bash
+conda activate cohere-voice
+hf auth login
+hf download CohereLabs/cohere-transcribe-03-2026
+```
+
+The model weights and supporting files are stored in the local Hugging Face cache. The checkpoint includes roughly 4 GB of weights; do not commit model artefacts, Hugging Face access tokens, private recordings, transcripts containing personal data, or runtime caches.
 
 ## Platform demos
 
 * [macOS / Apple Silicon](macos/README.md): local transcription with `mlx-audio` and the non-quantized Cohere checkpoint, including [Demo 01](macos/demo01/README.md) for microphone recording followed by transcription.
 * [Linux](linux/README.md): reserved for the Linux-specific implementation.
+
+## Run Demo 01 on macOS
+
+After selecting the desired microphone as the macOS input device, record and transcribe 10 seconds of Italian audio with:
+
+```bash
+conda activate cohere-voice
+python -m macos.demo01.record_and_transcribe --duration 10 --language it
+```
+
+To list devices or use a Bose QC35 II explicitly:
+
+```bash
+python -m macos.demo01.record_and_transcribe --list-devices
+python -m macos.demo01.record_and_transcribe \
+  --device "Bose QC35 II" \
+  --duration 10 \
+  --language it
+```
+
+See the [Demo 01 guide](macos/demo01/README.md) for output formats and additional options.
 
 ## Project conventions
 
