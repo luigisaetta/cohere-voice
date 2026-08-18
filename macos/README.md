@@ -18,6 +18,14 @@ python -m pip install -r macos/requirements.txt
 
 `sentencepiece` is installed alongside `mlx-audio` because it is required to load the Cohere Transcribe tokenizer.
 
+Download the official Cohere BF16 model before the first transcription:
+
+```bash
+hf download CohereLabs/cohere-transcribe-03-2026
+```
+
+See the repository-level [MLX Audio guide](../MLX_AUDIO.md) for how this checkpoint is loaded by `mlx-audio`.
+
 ## Available demos
 
 * [Demo 01: record and transcribe](demo01/README.md) records from the macOS input device (including a Bose headset selected as the system input), then transcribes the resulting WAV file.
@@ -34,13 +42,13 @@ The default model is the Cohere BF16 checkpoint and the default output is a UTF-
 Use JSON, SRT, or VTT output when needed:
 
 ```bash
-python macos/transcribe.py path/to/audio.m4a --language en --format json
+python -m macos.transcribe path/to/audio.m4a --language en --format json
 ```
 
 For long audio, leave segment parallelism automatic initially. If memory pressure occurs, lower the concurrency explicitly:
 
 ```bash
-python macos/transcribe.py path/to/audio.wav --language it --max-parallel-segments 1
+python -m macos.transcribe path/to/audio.wav --language it --max-parallel-segments 1
 ```
 
 ## Notes

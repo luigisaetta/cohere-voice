@@ -4,11 +4,12 @@
 
 ## Setup
 
-Follow the runtime setup in the [parent macOS guide](../README.md). Before the first transcription, accept access to the gated Cohere model on Hugging Face and authenticate:
+Follow the runtime setup in the [parent macOS guide](../README.md). Before the first transcription, accept access to the gated Cohere model on Hugging Face, authenticate, and download the official BF16 checkpoint:
 
 ```bash
 conda activate cohere-voice
 hf auth login
+hf download CohereLabs/cohere-transcribe-03-2026
 ```
 
 To use Bose headphones, first select the Bose microphone as the Mac's input in **System Settings → Sound → Input**. The demo then uses it automatically when no `--device` option is provided.
@@ -44,4 +45,4 @@ python -m macos.demo01.record_and_transcribe \
   --format json
 ```
 
-The first run downloads the model. Audio remains local after model download; do not commit the generated WAV files or transcripts.
+Audio remains local after model download; do not commit the generated WAV files or transcripts. See the repository-level [MLX Audio guide](../../MLX_AUDIO.md) for the complete model-loading flow.

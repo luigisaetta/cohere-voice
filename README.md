@@ -38,6 +38,7 @@ The Cohere checkpoint is gated on Hugging Face. First accept the model's access 
 
 ```bash
 conda activate cohere-voice
+python -m pip install -r macos/requirements.txt  # Apple Silicon demos
 hf auth login
 hf download CohereLabs/cohere-transcribe-03-2026
 ```
@@ -46,9 +47,11 @@ The model weights and supporting files are stored in the local Hugging Face cach
 
 This is the official Cohere BF16 checkpoint, not a community-converted `*-mlx` repository and not a quantized variant. It is nevertheless supported directly by `mlx-audio`, which runs it locally through MLX and Metal on Apple Silicon.
 
+For the complete runtime architecture and how the examples invoke `mlx-audio`, see [MLX_AUDIO.md](MLX_AUDIO.md).
+
 ## Platform demos
 
-* [macOS / Apple Silicon](macos/README.md): local transcription with `mlx-audio` and the non-quantized Cohere checkpoint, including [Demo 01](macos/demo01/README.md) for microphone recording followed by transcription.
+* [macOS / Apple Silicon](macos/README.md): local transcription with `mlx-audio` and the non-quantized Cohere checkpoint, including [Demo 01](macos/demo01/README.md) for microphone recording followed by transcription. See [the MLX Audio guide](MLX_AUDIO.md) for the integration details.
 * [Linux](linux/README.md): reserved for the Linux-specific implementation.
 
 ## Run Demo 01 on macOS
