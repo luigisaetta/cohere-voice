@@ -26,6 +26,8 @@ and is deleted before the HTTP response is returned.
 * Apple Silicon macOS with Metal available.
 * Conda environment `cohere-voice`.
 * Node.js 20.9 or later and npm.
+* FFmpeg available in the `cohere-voice` environment. Browser recordings are normally
+  WebM or MP4/M4A and require it for decoding.
 * Browser microphone permission. Chrome and Safari can expose different audio formats;
   the backend accepts browser-recorded WebM, MP4/M4A, OGG, WAV, and MPEG files.
 * Access approval for Cohere's gated model, Hugging Face authentication, and a local
@@ -36,7 +38,13 @@ Install the Python runtime from the repository root:
 ```bash
 conda activate cohere-voice
 python -m pip install -r macos/requirements.txt
+conda install -n cohere-voice -c conda-forge ffmpeg
 ```
+
+The Conda command is the recommended macOS setup for this repository because the backend
+is started from that environment. If FFmpeg is already managed through Homebrew, `brew
+install ffmpeg` is also valid, provided its executable is visible in the environment's
+`PATH`. The Linux command shown by the upstream `mlx-audio` error does not apply here.
 
 Install the frontend dependencies once:
 
@@ -65,9 +73,10 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Select **Refresh** in the sidebar
 to grant browser microphone permission and populate the input-device list. Choose the
-desired microphone, press **Start recording**, then **Stop recording**. The UI sends the
-recording to the local backend automatically and displays the transcript in the central
-text area.
+desired microphone and transcription language, press **Start recording**, then **Stop
+recording**. The UI sends the recording to the local backend automatically and displays
+the transcript in the central text area. Italian (`it`) is selected by default; English
+(`en`), French (`fr`), Arabic (`ar`), and Dutch (`nl`) are also available.
 
 If the browser does not show the intended headset microphone, ensure it is connected and
 enabled in **System Settings → Sound → Input**, then use **Refresh** again. A browser may

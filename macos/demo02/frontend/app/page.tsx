@@ -3,7 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 
 const MODEL_ID = "CohereLabs/cohere-transcribe-03-2026";
-const LANGUAGE = "it";
+const LANGUAGES = [
+  { code: "it", label: "Italiano" },
+  { code: "en", label: "English" },
+  { code: "fr", label: "Français" },
+  { code: "ar", label: "العربية" },
+  { code: "nl", label: "Nederlands" },
+] as const;
 
 type AppStatus = "idle" | "requesting-device" | "recording" | "transcribing" | "error";
 
@@ -32,6 +38,7 @@ function extensionForMimeType(mimeType: string): string {
 export default function Home() {
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState("");
+  const [language, setLanguage] = useState("it");
   const [status, setStatus] = useState<AppStatus>("idle");
   const [transcript, setTranscript] = useState("");
   const [message, setMessage] = useState("Enable microphone access to list available input devices.");
@@ -131,7 +138,7 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append("audio", blob, `recording.${extensionForMimeType(mimeType)}`);
-    formData.append("language", LANGUAGE);
+    formData.append("language", language);
 
     try {
       const response = await fetch("/api/transcribe", { method: "POST", body: formData });
@@ -199,6 +206,21 @@ export default function Home() {
           <p className="helper-text">Device labels become visible after browser permission is granted.</p>
         </section>
 
+        <section className="sidebar-section" aria-labelledby="language-heading">
+          <p className="eyebrow" id="language-heading">TRANSCRIPTION LANGUAGE</p>
+          <label className="device-label" htmlFor="language">Language</label>
+          <select
+            id="language"
+            value={language}
+            onChange={(event) => setLanguage(event.target.value)}
+            disabled={isBusy || isRecording}
+          >
+            {LANGUAGES.map(({ code, label }) => (
+              <option key={code} value={code}>{label} ({code})</option>
+            ))}
+          </select>
+        </section>
+
         <div className="sidebar-footer">Apple Silicon · local-only processing</div>
       </aside>
 
@@ -232,7 +254,7 @@ export default function Home() {
               <p className="eyebrow">RESULT</p>
               <h3 id="transcript-heading">Transcript</h3>
             </div>
-            <span>{LANGUAGE.toUpperCase()}</span>
+            <span>{language.toUpperCase()}</span>
           </div>
           <textarea
             aria-label="Transcript"

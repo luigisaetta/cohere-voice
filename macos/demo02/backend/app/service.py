@@ -7,6 +7,7 @@ Description: Loads MLX Audio models lazily and runs local audio transcription.
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 from typing import Any, Callable
 
@@ -15,6 +16,7 @@ from mlx_audio.stt.utils import load_model
 from .settings import Settings
 
 ModelLoader = Callable[[str], Any]
+FFMPEG_AUDIO_SUFFIXES = {".m4a", ".mp3", ".mp4", ".mpeg", ".ogg", ".webm"}
 
 
 class TranscriptionService:
@@ -63,6 +65,13 @@ class TranscriptionService:
         """
         if not audio_path.is_file():
             raise FileNotFoundError(f"Audio file not found: {audio_path}")
+        if audio_path.suffix.lower() in FFMPEG_AUDIO_SUFFIXES and not shutil.which(
+            "ffmpeg"
+        ):
+            raise RuntimeError(
+                "ffmpeg is required to decode this browser recording. Install it on macOS "
+                "with: conda install -n cohere-voice -c conda-forge ffmpeg"
+            )
 
         if self._model is None:
             self._model = self._model_loader(self._settings.model_id)

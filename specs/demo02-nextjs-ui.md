@@ -31,23 +31,26 @@ downloaded from Hugging Face.
    Cohere checkpoint.
 2. The UI must enumerate browser-visible audio-input devices after microphone access
    has been granted and allow one of them to be selected.
-3. The UI must provide a start-recording control and a stop-recording control.
-4. Stopping the recording must upload the captured audio and automatically start ASR.
-5. The central view must show clear recording/transcribing/error states and present
+3. The sidebar must provide a language listbox. Italian (`it`) is the default and the
+   available choices are English (`en`), French (`fr`), Arabic (`ar`), and Dutch (`nl`).
+4. The UI must provide a start-recording control and a stop-recording control.
+5. Stopping the recording must upload the captured audio and automatically start ASR.
+6. The central view must show clear recording/transcribing/error states and present
    the completed transcript in an editable text area.
-6. The backend must expose `GET /health`, `GET /models`, and `POST /transcribe`.
-7. `POST /transcribe` must accept a multipart `audio` file plus an optional language,
+7. The backend must expose `GET /health`, `GET /models`, and `POST /transcribe`.
+8. `POST /transcribe` must accept a multipart `audio` file plus an optional language,
    reject absent, empty, unsupported, or oversized uploads with a clear client error,
    and return the transcript, model ID, language, and audio filename.
-8. The backend default model, language, maximum tokens, and maximum upload size must
+9. The backend default model, language, maximum tokens, and maximum upload size must
    be configurable through documented environment variables.
 
 ## Non-functional requirements
 
 * Runs only on Apple Silicon macOS because MLX and Metal are required.
 * The initial model load can take time; later requests reuse the in-memory model.
-* Browser-recorded WebM, MP4/M4A, OGG, WAV, and MPEG audio are accepted. Actual
-  decoding remains the responsibility of `mlx-audio` and its installed audio stack.
+* Browser-recorded WebM, MP4/M4A, OGG, WAV, and MPEG audio are accepted. FFmpeg must be
+  available in the active Conda environment for the compressed browser formats; when it
+  is absent, the backend must return the macOS Conda installation command clearly.
 * Unit tests must mock model loading and inference. They must not download model files
   or require Metal.
 
