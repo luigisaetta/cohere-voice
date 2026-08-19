@@ -84,6 +84,11 @@ recording**. The UI sends the recording to the local backend automatically and d
 the transcript in the central text area. Italian (`it`) is selected by default; English
 (`en`), French (`fr`), Arabic (`ar`), and Dutch (`nl`) are also available.
 
+The **Model** listbox defaults to `CohereLabs/cohere-transcribe-03-2026` and also offers
+`mlx-community/Qwen3-ASR-1.7B-bf16`. Both models are loaded by the MLX Audio server only
+when first requested; download or approve model access on Hugging Face before selecting a
+model that is not already cached.
+
 If the browser does not show the intended headset microphone, ensure it is connected and
 enabled in **System Settings → Sound → Input**, then use **Refresh** again. A browser may
 require its own microphone permission even when macOS has granted it to another app.
@@ -95,7 +100,6 @@ The backend has safe defaults and accepts the following optional environment var
 | Variable | Default | Purpose |
 | --- | --- | --- |
 | `ASR_BACKEND_URL` | `http://127.0.0.1:8000` | MLX Audio API URL used only by the Next.js server route handler. |
-| `ASR_MODEL_ID` | `CohereLabs/cohere-transcribe-03-2026` | Model ID supplied to the OpenAI-compatible transcription request. |
 | `ASR_MAX_TOKENS` | `8192` | Maximum transcript tokens supplied to the API request. |
 | `MLX_AUDIO_HOST` | `127.0.0.1` | Network interface used by the backend start script. |
 | `MLX_AUDIO_PORT` | `8000` | Port used by the backend start script. |
@@ -110,8 +114,8 @@ The backend is MLX Audio's own server, not an application maintained in this rep
 The relevant upstream endpoints are:
 
 * `POST /v1/audio/transcriptions`: receives multipart `file`, `model`, `language`, and
-  `max_tokens` fields. Demo 02 additionally requests the OpenAI-compatible JSON response
-  format and maps its `text` result to the UI transcript.
+  `max_tokens` fields. Demo 02 sends one of its two supported model IDs, requests the
+  OpenAI-compatible JSON response format, and maps its `text` result to the UI transcript.
 * `GET /v1/models`: lists models managed by the MLX Audio server.
 
 The Next.js route handler validates that a browser recording is present, forwards the

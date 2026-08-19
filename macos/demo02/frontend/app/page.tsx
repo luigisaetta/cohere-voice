@@ -2,7 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const MODEL_ID = "CohereLabs/cohere-transcribe-03-2026";
+const MODELS = [
+  {
+    id: "CohereLabs/cohere-transcribe-03-2026",
+    label: "Cohere Transcribe",
+    detail: "Non-quantized BF16 · MLX Audio",
+  },
+  {
+    id: "mlx-community/Qwen3-ASR-1.7B-bf16",
+    label: "Qwen3 ASR 1.7B",
+    detail: "BF16 · MLX Audio",
+  },
+] as const;
 const LANGUAGES = [
   { code: "it", label: "Italiano" },
   { code: "en", label: "English" },
@@ -38,6 +49,7 @@ function extensionForMimeType(mimeType: string): string {
 export default function Home() {
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState("");
+  const [modelId, setModelId] = useState<string>(MODELS[0].id);
   const [language, setLanguage] = useState("it");
   const [status, setStatus] = useState<AppStatus>("idle");
   const [transcript, setTranscript] = useState("");
@@ -138,6 +150,7 @@ export default function Home() {
 
     const formData = new FormData();
     formData.append("audio", blob, `recording.${extensionForMimeType(mimeType)}`);
+    formData.append("model", modelId);
     formData.append("language", language);
 
     try {
@@ -172,11 +185,22 @@ export default function Home() {
           <div className="model-card">
             <span className="status-dot" />
             <div>
-              <strong>Cohere Transcribe</strong>
-              <span>{MODEL_ID}</span>
-              <small>Non-quantized BF16 · MLX Audio</small>
+              <strong>{MODELS.find((model) => model.id === modelId)?.label}</strong>
+              <span>{modelId}</span>
+              <small>{MODELS.find((model) => model.id === modelId)?.detail}</small>
             </div>
           </div>
+          <label className="device-label" htmlFor="model">Model</label>
+          <select
+            id="model"
+            value={modelId}
+            onChange={(event) => setModelId(event.target.value)}
+            disabled={isBusy || isRecording}
+          >
+            {MODELS.map(({ id, label }) => (
+              <option key={id} value={id}>{label}</option>
+            ))}
+          </select>
         </section>
 
         <section className="sidebar-section" aria-labelledby="device-heading">

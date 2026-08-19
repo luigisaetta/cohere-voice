@@ -29,8 +29,9 @@ downloaded from Hugging Face.
 
 ## Functional requirements
 
-1. The UI must show a sidebar with the active ASR model. The default is the official
-   Cohere checkpoint.
+1. The UI must show a sidebar with the active ASR model and a model listbox. The default
+   is the official Cohere checkpoint and the additional supported choice is
+   `mlx-community/Qwen3-ASR-1.7B-bf16`.
 2. The UI must enumerate browser-visible audio-input devices after microphone access
    has been granted and allow one of them to be selected.
 3. The sidebar must provide a language listbox. Italian (`it`) is the default and the
@@ -44,8 +45,9 @@ downloaded from Hugging Face.
    endpoint. No project-owned FastAPI application is required.
 8. The route handler must translate the completed OpenAI-compatible JSON response into
    the UI's transcript, model ID, language, and filename response.
-9. The MLX Audio URL, model ID, and maximum token count must be configurable through
-   documented environment variables.
+9. The MLX Audio URL and maximum token count must be configurable through documented
+   environment variables. The route handler must only forward the models exposed in the
+   UI listbox.
 
 ## Non-functional requirements
 

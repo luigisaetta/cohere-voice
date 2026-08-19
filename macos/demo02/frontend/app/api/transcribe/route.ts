@@ -4,6 +4,10 @@ const DEFAULT_BACKEND_URL = "http://127.0.0.1:8000";
 const DEFAULT_MODEL_ID = "CohereLabs/cohere-transcribe-03-2026";
 const DEFAULT_MAX_TOKENS = "8192";
 const BACKEND_TIMEOUT_MS = 15 * 60 * 1000;
+const ALLOWED_MODEL_IDS = new Set([
+  DEFAULT_MODEL_ID,
+  "mlx-community/Qwen3-ASR-1.7B-bf16",
+]);
 
 function backendUrl(): string {
   return (process.env.ASR_BACKEND_URL ?? DEFAULT_BACKEND_URL).replace(/\/$/, "");
@@ -18,9 +22,14 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   const language = formData.get("language");
+  const requestedModelId = formData.get("model");
+  const modelId = typeof requestedModelId === "string" ? requestedModelId : DEFAULT_MODEL_ID;
+  if (!ALLOWED_MODEL_IDS.has(modelId)) {
+    return NextResponse.json({ detail: "The selected ASR model is not available in Demo 02." }, { status: 400 });
+  }
   const mlxAudioFormData = new FormData();
   mlxAudioFormData.append("file", audio, audio.name);
-  mlxAudioFormData.append("model", process.env.ASR_MODEL_ID ?? DEFAULT_MODEL_ID);
+  mlxAudioFormData.append("model", modelId);
   mlxAudioFormData.append("max_tokens", process.env.ASR_MAX_TOKENS ?? DEFAULT_MAX_TOKENS);
   mlxAudioFormData.append("response_format", "json");
   if (typeof language === "string" && language.trim()) {
@@ -50,7 +59,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json({
       transcript: payload.text,
-      model_id: process.env.ASR_MODEL_ID ?? DEFAULT_MODEL_ID,
+      model_id: modelId,
       language: typeof language === "string" ? language : "",
       filename: audio.name,
     });
