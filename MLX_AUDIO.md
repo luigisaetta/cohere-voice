@@ -57,6 +57,13 @@ text, JSON, SRT, or VTT transcript
 
 `macos/demo01/record_and_transcribe.py` adds the microphone workflow. It records the selected macOS input device with `sounddevice`, writes a 16 kHz mono 16-bit WAV file, then calls the same shared adapter. The default input is the macOS system input; select the Bose QC35 II there or specify its name/index with `--device`.
 
+Demo 02 uses a different integration mode. It runs MLX Audio's built-in
+OpenAI-compatible API server through `macos/demo02/backend/start_server.sh`. The Next.js
+application records audio in the browser, then its server-side route handler forwards the
+recording to `POST /v1/audio/transcriptions` with the official Cohere model ID and the
+selected language. This keeps browser audio local while relying on MLX Audio's upstream
+model and inference server rather than a project-owned Python web API.
+
 ## Run the demos
 
 Transcribe an existing audio file:
@@ -82,6 +89,10 @@ python -m macos.demo01.record_and_transcribe \
 ```
 
 See [macos/README.md](macos/README.md) for the macOS runtime and [macos/demo01/README.md](macos/demo01/README.md) for recording options and output details.
+
+For the browser recording workflow, see [macOS Demo 02](macos/demo02/README.md). Its
+server startup requires the `mlx-audio[server]` dependency group installed by
+`macos/requirements.txt`.
 
 For sample-based WER measurement, use the [macOS WER test notebook](macos/wer-test/README.md). It loads a language-specific FLEURS sample from Hugging Face, uses the same local MLX runtime, and compares hypotheses with the dataset references.
 

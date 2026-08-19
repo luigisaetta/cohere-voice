@@ -11,16 +11,18 @@ input device and transcribes it locally with the non-quantized
 The demo has two separate local processes:
 
 ```text
-Browser -> Next.js frontend and route handler -> FastAPI ASR backend -> mlx-audio / MLX
+Browser -> Next.js frontend and route handler -> MLX Audio OpenAI-compatible API -> MLX
 ```
 
 * The Next.js frontend owns device enumeration, microphone permission, recording, and
   presentation of the transcript.
-* The Next.js route handler proxies the audio upload to the local FastAPI backend. The
-  browser therefore never needs to access the backend origin directly.
-* The FastAPI backend is launched with the `cohere-voice` Conda environment. It loads
-  the ASR model lazily once and retains it in process memory for later requests.
-* Temporary uploaded audio is removed once each transcription request completes.
+* The Next.js route handler proxies the audio upload to the local MLX Audio API server.
+  The browser therefore never needs to access the backend origin directly.
+* The MLX Audio server is launched with the `cohere-voice` Conda environment. It uses
+  the project's upstream OpenAI-compatible `POST /v1/audio/transcriptions` endpoint.
+* The Next.js route handler maps the browser's `audio` field to the OpenAI-compatible
+  `file` field and supplies the configured model, language, `max_tokens`, and JSON
+  response format.
 
 No audio or transcript is uploaded to a remote service after model files have been
 downloaded from Hugging Face.
@@ -37,28 +39,26 @@ downloaded from Hugging Face.
 5. Stopping the recording must upload the captured audio and automatically start ASR.
 6. The central view must show clear recording/transcribing/error states and present
    the completed transcript in an editable text area.
-7. The backend must expose `GET /health`, `GET /models`, and `POST /transcribe`.
-8. `POST /transcribe` must accept a multipart `audio` file plus an optional language,
-   reject absent, empty, unsupported, or oversized uploads with a clear client error,
-   and return the transcript, model ID, language, and audio filename.
-9. The backend default model, language, maximum tokens, and maximum upload size must
-   be configurable through documented environment variables.
+7. The integration must use the MLX Audio OpenAI-compatible
+   `POST /v1/audio/transcriptions` endpoint and its `GET /v1/models` model-management
+   endpoint. No project-owned FastAPI application is required.
+8. The route handler must translate the completed OpenAI-compatible JSON response into
+   the UI's transcript, model ID, language, and filename response.
+9. The MLX Audio URL, model ID, and maximum token count must be configurable through
+   documented environment variables.
 
 ## Non-functional requirements
 
 * Runs only on Apple Silicon macOS because MLX and Metal are required.
 * The initial model load can take time; later requests reuse the in-memory model.
 * Browser-recorded WebM, MP4/M4A, OGG, WAV, and MPEG audio are accepted. FFmpeg must be
-  available in the active Conda environment for the compressed browser formats; when it
-  is absent, the backend must return the macOS Conda installation command clearly.
-* Unit tests must mock model loading and inference. They must not download model files
-  or require Metal.
+  available in the active Conda environment for the compressed browser formats.
+* Tests must not download model files or require Metal. The frontend must type-check
+  and build against the OpenAI-compatible proxy contract.
 
 ## Acceptance checks
 
-* `pytest macos/demo02/backend/tests` passes in the `cohere-voice` environment.
-* `black --check macos/demo02/backend` and `pylint macos/demo02/backend/app` pass.
 * `npm run check` and `npm run build` pass in `macos/demo02/frontend` after its
   dependencies have been installed.
 * A user can select an input device, make a short recording, stop it, and see the
-  Cohere transcript in the UI when both local services are running.
+  Cohere transcript in the UI when the Next.js app and the local MLX Audio server run.

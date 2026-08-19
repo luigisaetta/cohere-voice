@@ -65,7 +65,7 @@ its dedicated folder, which contains the prerequisites and detailed instructions
 | Platform | Example | What it demonstrates | Entry point | Documentation |
 | --- | --- | --- | --- | --- |
 | macOS / Apple Silicon | Demo 01 — record and transcribe | Records Italian audio from a selected macOS input device, such as a Bose QC35 II headset, then transcribes it locally with the non-quantized Cohere checkpoint through `mlx-audio`. | [`record_and_transcribe.py`](macos/demo01/record_and_transcribe.py) | [Demo 01 folder](macos/demo01/) |
-| macOS / Apple Silicon | Demo 02 — local recording UI | Provides a browser microphone interface with device selection, start/stop recording, and a transcript text area. A Next.js frontend proxies recordings to a separate local FastAPI backend that runs `mlx-audio`. | [Next.js UI](macos/demo02/frontend/app/page.tsx) | [Demo 02 folder](macos/demo02/) |
+| macOS / Apple Silicon | Demo 02 — local recording UI | Provides a browser microphone interface with device selection, start/stop recording, and a transcript text area. The Next.js frontend proxies recordings to MLX Audio's OpenAI-compatible local API. | [Next.js UI](macos/demo02/frontend/app/page.tsx) | [Demo 02 folder](macos/demo02/) |
 | macOS / Apple Silicon | WER test | Downloads a deterministic Italian sample from Hugging Face FLEURS, runs local Cohere Transcribe inference, and calculates Word Error Rate (WER) against the dataset references. | [`wer_evaluation.ipynb`](macos/wer-test/wer_evaluation.ipynb) | [WER test folder](macos/wer-test/) |
 | Linux | Future demos | Reserved for Linux-specific implementations. | — | [Linux folder](linux/) |
 

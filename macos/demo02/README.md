@@ -2,24 +2,26 @@
 
 `demo02` provides a graphical, local-only transcription workflow for Apple Silicon
 macOS. A Next.js interface lets the user grant microphone access, select a browser-visible
-input device, record audio, and read or edit the resulting transcript. A separate FastAPI
-backend runs `mlx-audio` in the `cohere-voice` Conda environment and invokes the official,
-non-quantized `CohereLabs/cohere-transcribe-03-2026` checkpoint.
+input device, record audio, and read or edit the resulting transcript. A separate server
+provided by `mlx-audio` runs in the `cohere-voice` Conda environment and invokes
+the official, non-quantized `CohereLabs/cohere-transcribe-03-2026` checkpoint.
 
 ## Architecture
 
 ```text
-Browser microphone -> Next.js UI -> Next.js /api/transcribe proxy -> FastAPI -> mlx-audio / MLX
+Browser microphone -> Next.js UI -> Next.js /api/transcribe proxy -> MLX Audio API -> MLX
 ```
 
 The browser is responsible only for device selection and recording. The Next.js route
-handler forwards the audio to the FastAPI process, so the browser never contacts the
-Python server directly and no CORS configuration is required. The Python process loads
-the model lazily at its first transcription and reuses it for subsequent requests.
+handler forwards the audio to the `mlx-audio` server, so the browser never contacts the
+API process directly and no browser CORS configuration is required. The MLX Audio server
+implements the OpenAI-compatible Audio Transcriptions API at
+`POST /v1/audio/transcriptions`; Demo 02 uses this upstream API rather than maintaining a
+project-owned FastAPI backend. The server loads the model on demand and reuses it for
+subsequent requests.
 
 After model artefacts are downloaded from Hugging Face, audio and transcripts stay on the
-Mac. Each backend upload is stored in a temporary file only for the duration of inference
-and is deleted before the HTTP response is returned.
+Mac. Upload decoding and in-memory model management are handled by MLX Audio.
 
 ## Prerequisites
 
@@ -29,7 +31,7 @@ and is deleted before the HTTP response is returned.
 * FFmpeg available in the `cohere-voice` environment. Browser recordings are normally
   WebM or MP4/M4A and require it for decoding.
 * Browser microphone permission. Chrome and Safari can expose different audio formats;
-  the backend accepts browser-recorded WebM, MP4/M4A, OGG, WAV, and MPEG files.
+  the MLX Audio server accepts browser-recorded WebM, MP4/M4A, OGG, WAV, and MPEG files.
 * Access approval for Cohere's gated model, Hugging Face authentication, and a local
   model download as documented in the [parent macOS guide](../README.md).
 
@@ -57,12 +59,16 @@ npm install
 
 Use two terminals from the repository root.
 
-Terminal 1 starts the Python ASR backend in the Conda environment:
+Terminal 1 starts the MLX Audio OpenAI-compatible API server in the Conda environment:
 
 ```bash
 conda activate cohere-voice
-uvicorn macos.demo02.backend.app.main:app --host 127.0.0.1 --port 8000
+./macos/demo02/backend/start_server.sh
 ```
+
+The script binds only to `127.0.0.1`, exposes port `8000` by default, and restricts API
+CORS to `http://localhost:3000`. It accepts `MLX_AUDIO_HOST`, `MLX_AUDIO_PORT`, and
+`MLX_AUDIO_ALLOWED_ORIGINS` when a different local setup is needed.
 
 Terminal 2 starts the Next.js frontend:
 
@@ -88,32 +94,34 @@ The backend has safe defaults and accepts the following optional environment var
 
 | Variable | Default | Purpose |
 | --- | --- | --- |
-| `COHERE_VOICE_MODEL` | `CohereLabs/cohere-transcribe-03-2026` | Hugging Face model ID or local MLX-compatible path. |
-| `COHERE_VOICE_LANGUAGE` | `it` | Default ASR language sent to MLX Audio. |
-| `COHERE_VOICE_MAX_TOKENS` | `8192` | Maximum generated transcript tokens per request. |
-| `COHERE_VOICE_MAX_UPLOAD_BYTES` | `104857600` | Maximum browser audio upload size in bytes (100 MiB). |
-| `ASR_BACKEND_URL` | `http://127.0.0.1:8000` | Backend URL used only by the Next.js server route handler. |
+| `ASR_BACKEND_URL` | `http://127.0.0.1:8000` | MLX Audio API URL used only by the Next.js server route handler. |
+| `ASR_MODEL_ID` | `CohereLabs/cohere-transcribe-03-2026` | Model ID supplied to the OpenAI-compatible transcription request. |
+| `ASR_MAX_TOKENS` | `8192` | Maximum transcript tokens supplied to the API request. |
+| `MLX_AUDIO_HOST` | `127.0.0.1` | Network interface used by the backend start script. |
+| `MLX_AUDIO_PORT` | `8000` | Port used by the backend start script. |
+| `MLX_AUDIO_ALLOWED_ORIGINS` | `http://localhost:3000` | CORS origin permitted by the MLX Audio server. |
 
 To change `ASR_BACKEND_URL`, copy `frontend/.env.local.example` to `frontend/.env.local`
 and edit the value. Do not expose a Hugging Face token or other credentials in that file.
 
-## Local backend endpoints
+## MLX Audio OpenAI-compatible API
 
-* `GET /health` returns backend availability and whether the model is already loaded.
-* `GET /models` returns the configured default model and language.
-* `POST /transcribe` receives multipart form data with an `audio` file and optional
-  `language` string. It returns the transcript, model ID, language, and original filename.
+The backend is MLX Audio's own server, not an application maintained in this repository.
+The relevant upstream endpoints are:
 
-The backend rejects missing, empty, unsupported, or oversized uploads. Model loading and
-inference failures are reported without exposing Python internals to the browser.
+* `POST /v1/audio/transcriptions`: receives multipart `file`, `model`, `language`, and
+  `max_tokens` fields. Demo 02 additionally requests the OpenAI-compatible JSON response
+  format and maps its `text` result to the UI transcript.
+* `GET /v1/models`: lists models managed by the MLX Audio server.
+
+The Next.js route handler validates that a browser recording is present, forwards the
+request server-side, and reports API connection or response errors in the UI.
 
 ## Development checks
 
 ```bash
 conda activate cohere-voice
-pytest macos/demo02/backend/tests
-black --check macos/demo02/backend
-pylint macos/demo02/backend/app
+mlx_audio.server --help
 
 cd macos/demo02/frontend
 npm run check

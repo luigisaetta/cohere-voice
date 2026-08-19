@@ -29,7 +29,7 @@ See the repository-level [MLX Audio guide](../MLX_AUDIO.md) for how this checkpo
 ## Available demos
 
 * [Demo 01: record and transcribe](demo01/README.md) records from the macOS input device (including a Bose headset selected as the system input), then transcribes the resulting WAV file.
-* [Demo 02: local recording UI](demo02/README.md) provides a Next.js microphone interface and a separate FastAPI backend for local transcription through `mlx-audio`.
+* [Demo 02: local recording UI](demo02/README.md) provides a Next.js microphone interface that calls MLX Audio's OpenAI-compatible local transcription API.
 * [WER test](wer-test/README.md) evaluates sample WER on a language-specific Hugging Face dataset from a Jupyter notebook.
 * `transcribe.py` is the shared command-line component for transcribing an existing audio file.
 

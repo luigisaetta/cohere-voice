@@ -1,5 +1,5 @@
-# Local ASR runtime for Apple Silicon.
-mlx-audio==0.5.0
+# Local ASR runtime and OpenAI-compatible API server for Apple Silicon.
+mlx-audio[server]==0.5.0
 
 # Required by mlx-audio to load Cohere Transcribe's tokenizer.
 sentencepiece==0.2.1
