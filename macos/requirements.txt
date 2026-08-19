@@ -11,3 +11,8 @@ ipywidgets>=8.1.0
 datasets>=4.0.0
 jiwer>=4.0.0
 pandas>=2.2.0
+
+# Demo 02: local Next.js UI backend.
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+python-multipart>=0.0.20
