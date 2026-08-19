@@ -7,7 +7,7 @@
 
 `cohere-voice` is an experimental workspace for evaluating and building demonstrations around Cohere's automatic speech recognition (ASR) models distributed through Hugging Face. The initial focus is [Cohere Transcribe 03-2026](https://huggingface.co/CohereLabs/cohere-transcribe-03-2026).
 
-The project will contain small, reproducible examples that make it easy to understand the complete transcription path: loading a model, preparing audio, running inference, and handling the resulting transcript. It is intended for prototyping and technical evaluation rather than as a production-ready speech service.
+The project will contain examples that make it easy to understand the complete transcription path: loading a model, preparing audio, running inference, and handling the resulting transcript. It is intended for prototyping and technical evaluation rather than as a production-ready speech service.
 
 ## Goals
 
