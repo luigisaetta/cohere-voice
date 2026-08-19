@@ -99,3 +99,17 @@ See the [Demo 01 guide](macos/demo01/README.md) for output formats and additiona
 * Use small synthetic or openly licensed audio samples only.
 
 See [AGENTS.md](AGENTS.md) for the complete development and contribution rules.
+
+## Citation
+
+If you use this project or its macOS examples, please cite MLX Audio:
+
+```bibtex
+@misc{mlx-audio,
+  author = {Canuma, Prince},
+  title = {MLX Audio},
+  year = {2025},
+  howpublished = {\url{https://github.com/Blaizzy/mlx-audio}},
+  note = {Audio processing library for Apple Silicon with TTS, STT, and STS capabilities.}
+}
+```
